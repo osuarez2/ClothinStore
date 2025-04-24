@@ -108,13 +108,16 @@ public class SignIn {
 	            JOptionPane.showMessageDialog(null, "Welcome back, " + userName + "!", "Sign In Successful", JOptionPane.INFORMATION_MESSAGE);
 	            
 	            
-	            frame.dispose(); 
-	            
-	     
+	            frame.dispose(); // Close login window
+
+	            // Navigate to dashboards
 	            
 	            if (userType == 1) {
-	                new AdminDashboard();   
-	          
+	                new AdminDashboard();
+	            } else if (userType == 2) {
+	                new EmployeeDashboard(); 
+	            } else if (userType == 3) {
+	                new CustomerDashboard(); 
 	            } else {
 	                JOptionPane.showMessageDialog(null, "Unknown user type.", "Error", JOptionPane.ERROR_MESSAGE);
 	            }
@@ -131,6 +134,7 @@ public class SignIn {
 	    }
 	}
 }
+	
 	
 	
 	
