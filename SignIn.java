@@ -1,140 +1,181 @@
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JFrame;
-import javax.swing.JButton;
+import java.awt.EventQueue;
 import java.sql.*;
-import javax.swing.JTextField;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import java.sql.Connection;
 
 public class SignIn {
 
-	
-	private JFrame frame;
-	private JTextField emailTF;
-	private JTextField passwordTF;
-	
-	public SignIn() { initialize(); 
-	
-	frame.setVisible(true);
-	
-	}
-	
-	
-	
-	private void initialize() {
-		frame = new JFrame();
-		frame.setTitle("Sign In");
-		frame.setBounds(100, 100, 267, 333);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		
-		createSigningInButton(); 
-		createEmailLBL(); 
-		createEmailTF(); 
-		createPasswordLBL(); 
-		createPasswordTF();
-	
-	}
-	
-	
-	
-	
-	
-	public void createSigningInButton() {
-		JButton signInButton = new JButton("Sign In");
-		signInButton.setBounds(83, 238, 117, 29);
-		frame.getContentPane().add(signInButton);
-		signInButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Put code here that you want to run when this button is clicked
-				signIn(); // Adds the new patient to the database when the button is clicked
+    private JFrame frame;
+    private JTextField usernamefield;
+    private JTextField passwordfield;
+
+    /**
+     * Launch the application.
+     */
+    public static void main(String[] args) {
+		 Database.connect();
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    SignIn window = new SignIn();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Create the application.
+     */
+    public SignIn() {
+        initialize();
+    }
+
+    /**
+     * Initialize the contents of the frame.
+     */
+    private void initialize() {
+        frame = new JFrame();
+        frame.setBounds(100, 100, 389, 404);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setLayout(null);
+        
+        JLabel SI = new JLabel("Sign in");
+        SI.setBounds(133, 0, 145, 40);
+        SI.setFont(new Font("Arial Black", Font.BOLD, 30));
+        frame.getContentPane().add(SI);
+        
+        JButton btnNewButton = new JButton("New user?");
+        btnNewButton.setBounds(153, 264, 85, 21);
+        frame.getContentPane().add(btnNewButton);
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                goToSignUpPage();
+            }
+        });
+        
+        JLabel lblNewLabel_1 = new JLabel("User Name");
+        lblNewLabel_1.setBounds(146, 99, 119, 22);
+        lblNewLabel_1.setFont(new Font("Arial Black", Font.PLAIN, 15));
+        frame.getContentPane().add(lblNewLabel_1);
+        
+        usernamefield = new JTextField();
+        usernamefield.setBounds(120, 131, 145, 22);
+        frame.getContentPane().add(usernamefield);
+        usernamefield.setColumns(10);
+        
+        JLabel lblNewLabel_2 = new JLabel("Password");
+        lblNewLabel_2.setBounds(153, 163, 85, 13);
+        lblNewLabel_2.setFont(new Font("Arial Black", Font.PLAIN, 15));
+        frame.getContentPane().add(lblNewLabel_2);
+        
+        passwordfield = new JTextField();
+        passwordfield.setBounds(120, 187, 145, 22);
+        frame.getContentPane().add(passwordfield);
+        passwordfield.setColumns(10);
+        
+        JButton btnSignIn = new JButton("Sign In");
+        btnSignIn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                signIn();
+            }
+        });
+        btnSignIn.setBounds(153, 233, 85, 21);
+        frame.getContentPane().add(btnSignIn);
+        
+        setLookAndFeel();
+        
+        Database.connect(); 
+        setupClosingDBConnection();
+    }
+    
+    public void signIn() {
+    	try {
+			String query = "SELECT * FROM users WHERE user_name = ?"; // Enter the query
+			PreparedStatement stm = Database.connection.prepareStatement(query); // Create statement
+			stm.setString(1, usernamefield.getText()); // Sets the int value of 4 to the first question mark in the query string
+			ResultSet result = stm.executeQuery(); // Execute the query
+			
+			if (!result.first()) {
+				JOptionPane.showMessageDialog(null, "User not found!.");
+			} else {
+			String userType = result.getString("user_type");
+			String passwordFromDB = result.getString("user_password");
+			
+			if (passwordFromDB.equals(passwordfield.getText())) {
+	             switch (userType.toLowerCase()) {
+	                 case "admin":
+	                     loadAdminPage();
+	                     break;
+	                 case "employee":
+	                	 frame.dispose(); // Close current sign-in window
+	                     new Menu();
+	                     break;
+	                 case "customer":
+	                     frame.dispose(); // Close current sign-in window
+	                     new Menu(); // Open menu for customer
+	                     break;
+	                 default:
+	                     JOptionPane.showMessageDialog(null, "Unknown user type.");
+	             }
+			} else {
+				JOptionPane.showMessageDialog(null, "Invalid password.");
 			}
-		});
-	}
+		}
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+    }
 
-	
-	
-	public void createEmailLBL() {
-	
-	
-	JLabel emailLBL = new JLabel("Email");
-	emailLBL.setBounds(30, 30, 100, 25);
-	frame.getContentPane().add(emailLBL);
-	
-	}
-	
-	public void createEmailTF() {
-	
-	emailTF = new JTextField();
-	emailTF.setBounds(140, 30, 200, 25);
-	frame.getContentPane().add(emailTF);
-	emailTF.setColumns(10);
-	
-	}
-	
-	public void createPasswordLBL() {
-	
-	JLabel passwordLBL = new JLabel("Password");
-	passwordLBL.setBounds(30, 70, 100, 25);
-	frame.getContentPane().add(passwordLBL);
-	
-	}
-	
-	public void createPasswordTF () {
-	
-	passwordTF = new JTextField();
-	passwordTF.setBounds(140, 70, 200, 25);
-	frame.getContentPane().add(passwordTF);
-	passwordTF.setColumns(10);
-	
+    public void setLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (Exception e) { }
+    }
 
-	}
-	
-	public void signIn() {
-	    try {
-	        String query = "SELECT * FROM users WHERE user_email = ? AND user_password = ?";
-	        PreparedStatement stm = Database.connection.prepareStatement(query);
-	        
-	        stm.setString(1, emailTF.getText());
-	        stm.setString(2, passwordTF.getText());
-	        
-	        ResultSet rs = stm.executeQuery();
-	        
-	        if (rs.next()) {
-	           
-	            String userName = rs.getString("user_name");
-	            int userType = rs.getInt("userType_id");
-	            JOptionPane.showMessageDialog(null, "Welcome back, " + userName + "!", "Sign In Successful", JOptionPane.INFORMATION_MESSAGE);
-	            
-	            
-	            frame.dispose(); // Close login window
+    public static void setupClosingDBConnection() {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Database.connection.close(); 
+                    System.out.println("Application Closed - DB Connection Closed");
+                } catch (SQLException e) { 
+                    e.printStackTrace(); 
+                }
+            }
+        }, "Shutdown-thread"));
+    }
 
-	            // Navigate to dashboards
-	            
-	            if (userType == 1) {
-	                new AdminDashboard();
-	            } else if (userType == 2) {
-	                new EmployeeDashboard(); 
-	            } else if (userType == 3) {
-	                new CustomerDashboard(); 
-	            } else {
-	                JOptionPane.showMessageDialog(null, "Unknown user type.", "Error", JOptionPane.ERROR_MESSAGE);
-	            }
-	            
-	            
-	        } else {
-	            
-	            JOptionPane.showMessageDialog(null, "Incorrect email or password.", "Sign In Failed", JOptionPane.ERROR_MESSAGE);
-	        }
-	        
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        JOptionPane.showMessageDialog(null, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-	    }
-	}
+    public void goToSignUpPage() {
+        frame.dispose();
+        new SignUp();
+    }
+
+    // Placeholder methods for loading different user pages
+    public void loadAdminPage() {
+        // Code to load the admin page
+        JOptionPane.showMessageDialog(null, "Welcome Admin!");
+        frame.dispose();
+        //new AdminPage();
+    }
+
+    public void loadEmployeePage() {
+        // Code to load the employee page
+        JOptionPane.showMessageDialog(null, "Welcome Employee!");
+        frame.dispose();
+        //new EmployeePage();
+    }
 }
-	
-	
-	
-	
