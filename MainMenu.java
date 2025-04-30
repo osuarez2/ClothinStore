@@ -1,20 +1,27 @@
 import java.awt.EventQueue;
 import javax.swing.JFrame;
-import javax.swing.UIManager;
+import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
+
 
 public class MainMenu {
 
 	private JFrame frame;
+	
 
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					new MainMenu();
+					MainMenu window = new MainMenu();
+					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -22,33 +29,38 @@ public class MainMenu {
 		});
 	}
 
-	public MainMenu() { initialize(); }
+	/**
+	 * Create the application.
+	 */
+	public MainMenu() {
+		initialize();
+	}
 
+	/**
+	 * Initialize the contents of the frame.
+	 */
 	private void initialize() {
+		
 		frame = new JFrame();
+		frame.setTitle("Clothing Store");
 		frame.setVisible(true);
-		frame.setBounds(100, 100, 450, 253);
+		frame.setBounds(100, 300, 1000, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		frame.getContentPane().setBackground(Color.WHITE);
 		
-		setLookAndFeel(); // Makes the UI look modern if the user is running on Windows
 		
 		Database.connect(); // Establish connection to database
-		setupClosingDBConnection(); // Handles closing the database connection if the user closes the program
+		setupClosingDBConnection();
 		
-		createDemo1Button();
-		createDemo2Button();
-		createDemo3Button();
+		
+		createLogoLBL();
+		createSignUpButton();
+		createSignInButton();
+		createContinueAsGuestButton();
+		
 	}
 	
-	// Makes the UI look modern if the user is running on Windows
-	public void setLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-		} catch (Exception e) { }
-	}
-	
-	// Handles closing the database connection if the user closes the program
 	public static void setupClosingDBConnection() {
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 	        public void run() {
@@ -58,51 +70,75 @@ public class MainMenu {
 	    }, "Shutdown-thread"));
 	}
 	
-	public void createDemo1Button() {
-		JButton demo1Button = new JButton("Go to Button/Label/TextField Demo Page");
-		demo1Button.setBounds(62, 53, 310, 29);
-		frame.getContentPane().add(demo1Button);
-		demo1Button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				goToButtonLabelTextFieldDemoPage();
+	
+	
+	
+		
+	public void createLogoLBL() {
+		
+		JLabel logoLBL = new JLabel("Clothing Store");
+		logoLBL.setBounds(450, 113, 100, 16);
+		frame.getContentPane().add(logoLBL);
+		
+		}
+	
+	public void createSignInButton() {
+	
+	
+		JButton signInButton = new JButton("Sign In");
+		signInButton.setBounds(390, 163, 117, 29);
+		frame.getContentPane().add(signInButton);
+		
+		signInButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { goToSignInPage();
 			}
 		});
+		
 	}
 	
-	public void createDemo2Button() {
-		JButton demo2Button = new JButton("Go to Combo Box Demo Page");
-		demo2Button.setBounds(62, 94, 310, 29);
-		frame.getContentPane().add(demo2Button);
-		demo2Button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				goToComboBoxDemoPage();
+	
+	
+	public void createSignUpButton() {
+		JButton signUpButton = new JButton("Sign Up");
+		signUpButton.setBounds(510, 163, 120, 29);
+		frame.getContentPane().add(signUpButton);
+	
+		signUpButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { goToSignUpPage();
 			}
 		});
+		
 	}
 	
-	public void createDemo3Button() {
-		JButton demo3Button = new JButton("Go to Table Demo Page");
-		demo3Button.setBounds(62, 135, 310, 29);
-		frame.getContentPane().add(demo3Button);
-		demo3Button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				goToTablePage();
-			}
-		});
+	public void createContinueAsGuestButton() {
+	    JButton guestButton = new JButton("Continue As Guest ->");
+	    guestButton.setBounds(430, 200, 180, 29);
+	    frame.getContentPane().add(guestButton);
+
+	    guestButton.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) { 
+	            goToStoreMainMenuPageAsGuest();
+	        }
+	    });
+	}
+
+	public void goToStoreMainMenuPageAsGuest() {
+	    frame.dispose();
+	    new storeMainMenu();
 	}
 	
-	public void goToButtonLabelTextFieldDemoPage() {
+	public void goToSignUpPage() {
 		frame.dispose();
-		new ButtonLabelTextFieldDemo();
+		new SignUp();
 	}
 	
-	public void goToComboBoxDemoPage() {
+	
+	
+	public void goToSignInPage() {
 		frame.dispose();
-		new ComboBoxDemo();
+		new SignIn();
 	}
 	
-	public void goToTablePage() {
-		frame.dispose();
-		new TableDemo();
-	}
+	
+	
 }

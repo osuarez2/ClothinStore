@@ -2,12 +2,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 class Database {
+	
 	public static Connection connection;
 	
 	public static void connect() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/store?serverTimezone=EST", "root", "database28");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost/clothing_store?serverTimezone=EST", "root", "Molly&Elvis2");
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -15,68 +16,3 @@ class Database {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*import java.sql.Connection;
-import java.sql.DriverManager;
-
-class Database {
-	public static Connection connection;
-	
-	public static void connect() {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			String databaseName = "doctors_office"; //String userName = "root"; String password = "minecraft242";
-			String userName = "Reader"; String password = "read123";
-			connection = DriverManager.getConnection("jdbc:mysql://localhost/" + databaseName + "?serverTimezone=EST", userName, password);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-	}
-}*/

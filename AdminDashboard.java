@@ -25,14 +25,23 @@ public class AdminDashboard {
 		frame = new JFrame();
 		frame.setVisible(true);
 		frame.setTitle("Dashboard");
-		frame.setBounds(100, 100, 400, 350);
+		frame.setBounds(100, 400, 1000, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		JLabel welcomeLabel = new JLabel("Welcome, " + GlobalSession.getUserName() + "!");
+		welcomeLabel.setBounds(55, 5, 300, 25);
+		frame.getContentPane().add(welcomeLabel);
+
+		
+		
+		
+		
+
 		
 		createAddEmployeeAcctButton(); 
 		
-		createViewOrdersButton(); 
+		createViewOrdersButton();
 		
 		createEditAcctsLBL(); 
 		
@@ -42,16 +51,17 @@ public class AdminDashboard {
 		
 		createDeleteAcctsComboBox(); 
 		
-		
+		createSignOutButton();
 		
 	
 		
 	}
 	
 	
+	
 	public void createAddEmployeeAcctButton() {
 		JButton addEmployeeButton = new JButton("Add Employee");
-		addEmployeeButton.setBounds(140, 30, 100,30);
+		addEmployeeButton.setBounds(55, 30, 140,30);
 		frame.getContentPane().add(addEmployeeButton);
 		addEmployeeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -64,7 +74,7 @@ public class AdminDashboard {
 	
 	public void createViewOrdersButton() {
 		JButton viewOrdersButton = new JButton("View Orders Placed");
-		viewOrdersButton.setBounds(300, 70,100,50);
+		viewOrdersButton.setBounds(55, 220,160,30);
 		frame.getContentPane().add(viewOrdersButton);
 		viewOrdersButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -139,6 +149,24 @@ public class AdminDashboard {
 	}
 	
 	
+	public void createSignOutButton() {
+		JButton addSignOutButton = new JButton("Sign Out");
+		addSignOutButton.setBounds(55, 260, 100, 30);
+		frame.getContentPane().add(addSignOutButton);
+		addSignOutButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				goToSignIn();
+				
+			}
+			
+		
+			
+		});
+	}
+	
+	
+
 	
 	
 	public void goToAddNewEmployeePage() {
@@ -150,7 +178,12 @@ public class AdminDashboard {
 		frame.dispose();
 		new Orders();
 	}
-	
+	public void goToSignIn() {
+	    // Clear the session
+	    GlobalSession.setUser(0, "Guest", "");
+	    frame.dispose();
+	    new SignIn();
+	}	
 
 	
 }
