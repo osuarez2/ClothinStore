@@ -1,0 +1,90 @@
+CREATE TABLE clothing_store.users (
+    user_id INT AUTO_INCREMENT, 
+    user_name varchar(255),
+    user_email varchar(255) UNIQUE,
+    user_password varchar(255),
+    userType_id INT,
+	user_address varchar(255),
+    password_reset_required BOOLEAN DEFAULT TRUE,
+	PRIMARY KEY (user_id ),
+    FOREIGN KEY (userType_id) REFERENCES user_type(userType_id)
+    
+);
+
+UPDATE clothing_store.users
+SET password_reset_required = FALSE
+WHERE userType_id IN (1, 3);
+
+CREATE TABLE clothing_store.user_type (
+    userType_id INT AUTO_INCREMENT, 
+    user_type varchar(255),
+	PRIMARY KEY (userType_id )
+    
+);
+
+CREATE TABLE clothing_store.orders (
+    order_id INT AUTO_INCREMENT, 
+    user_id INT,
+    total_price varchar(15),
+    order_status varchar(15),
+    shipping_address varchar(255),
+    time_placed DATETIME DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (order_id ),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+   
+);
+
+CREATE TABLE clothing_store.department (
+    dept_id INT AUTO_INCREMENT, 
+	dept_name varchar(15),
+	PRIMARY KEY (dept_id) 
+   
+);
+
+CREATE TABLE clothing_store.inventory (
+    item_id INT AUTO_INCREMENT, 
+    dept_id INT,
+	item_name varchar(15),
+    item_size varchar(15),
+    item_price varchar(255),
+    in_stock varchar(255),
+	PRIMARY KEY (item_id ),
+    FOREIGN KEY (dept_id) REFERENCES department (dept_id)
+   
+);
+
+CREATE TABLE clothing_store.items_in_order (
+    order_id INT,
+    item_id INT,
+    item_quantity INT,
+    total_price VARCHAR(15),
+    order_status VARCHAR(15),
+    shipping_address VARCHAR(255),
+    time_placed DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (order_id, item_id),
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (item_id) REFERENCES inventory(item_id)
+);
+
+
+INSERT INTO clothing_store.user_type
+VALUES (1, "Admin");
+
+INSERT INTO clothing_store.user_type
+VALUES (2, "Employee");
+
+INSERT INTO clothing_store.user_type
+VALUES (3, "Customer");
+
+INSERT INTO clothing_store.users
+VALUES (1, "Olivia Suarez", "osuarez@clothin_store.com", "password", 1, "address", FALSE );
+
+INSERT INTO clothing_store.department
+VALUES (1, "Mens");
+
+INSERT INTO clothing_store.department
+VALUES (2, "Womens");
+
+INSERT INTO clothing_store.department
+VALUES (3, "Kids");
+
